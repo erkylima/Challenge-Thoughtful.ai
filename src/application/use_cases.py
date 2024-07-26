@@ -1,4 +1,4 @@
-from domain.article import Article
+from domain.article import NewsArticle
 from application.ports import NewsHandler
 
 class NewsProcessor:

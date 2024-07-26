@@ -1,9 +1,10 @@
-from RPA.FileSystem import FileSystem
-
-
-def minimal_task():
-    pass
-
-
+from adapters.news_handlers import LATimesScraperNewsHandler, ExcelSaverHandler
+from application.use_cases import NewsProcessor
 if __name__ == "__main__":
-    minimal_task()
+    handler_chain = LATimesScraperNewsHandler(ExcelSaverHandler())
+
+    search_term = "soccer"
+
+    news_processor = NewsProcessor(handler_chain, search_term)
+
+    url = "https://www.latimes.com/"
