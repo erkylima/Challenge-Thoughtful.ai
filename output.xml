@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 6.1.1 (Python 3.10.12 on linux)" generated="20240726 16:14:03.051" rpa="true" schemaversion="4">
+<suite id="s1" name="Tasks" source="/home/erky/PycharmProjects/ThoughtfulRPAChallenge/tasks.robot">
+<test id="s1-t1" name="Open Website of CRM application" line="8">
+<kw name="Open website">
+<kw name="Open Available Browser" library="RPA.Browser.Selenium">
+<arg>https://www.rpa-unlimited.com/youtube/robocorp-tutorial/</arg>
+<doc>Attempts to open a browser on the user's device from a set of
+supported browsers. Automatically downloads a corresponding webdriver
+if none is already installed.</doc>
+<msg timestamp="20240726 16:14:03.381" level="INFO">Downloaded webdriver to: /home/erky/.robocorp/webdrivers/.wdm/drivers/chromedriver/linux64/126.0.6478.182/chromedriver-linux64/chromedriver</msg>
+<msg timestamp="20240726 16:14:03.385" level="INFO">Webdriver version taken into use: ChromeDriver 126.0.6478.182 (5b5d8292ddf182f8b2096fa665b473b6317906d5-refs/branch-heads/6478@{#1776})
+</msg>
+<msg timestamp="20240726 16:14:03.386" level="INFO">Creating an instance of the Chrome WebDriver.</msg>
+<msg timestamp="20240726 16:14:04.379" level="INFO">Created Chrome browser (version 126.0.6478) with arguments: --disable-dev-shm-usage --disable-web-security --allow-running-insecure-content --no-sandbox</msg>
+<msg timestamp="20240726 16:14:04.380" level="INFO" html="true">&lt;p&gt;Attempted combinations:&lt;/p&gt;&lt;div class="doc"&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Browser&lt;/th&gt;&lt;th&gt;Download&lt;/th&gt;&lt;th&gt;Error&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Chrome&lt;/td&gt;&lt;td&gt;False&lt;/td&gt;&lt;td&gt;Message: Webdriver executable 'chromedriver' is not in PATH (with disabled Selenium Manager)
+&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Chrome&lt;/td&gt;&lt;td&gt;True&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;</msg>
+<msg timestamp="20240726 16:14:04.380" level="INFO">Opening url 'https://www.rpa-unlimited.com/youtube/robocorp-tutorial/'</msg>
+<status status="PASS" starttime="20240726 16:14:03.215" endtime="20240726 16:14:06.390"/>
+</kw>
+<status status="PASS" starttime="20240726 16:14:03.214" endtime="20240726 16:14:06.391"/>
+</kw>
+<status status="PASS" starttime="20240726 16:14:03.214" endtime="20240726 16:14:06.391"/>
+</test>
+<test id="s1-t2" name="Add Customer to system" line="11">
+<kw name="Add customer to CRM system">
+<kw name="Input Text" library="RPA.Browser.Selenium">
+<arg>company-name</arg>
+<arg>Toms Tech</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<msg timestamp="20240726 16:14:06.393" level="INFO">Typing text 'Toms Tech' into text field 'company-name'.</msg>
+<status status="PASS" starttime="20240726 16:14:06.393" endtime="20240726 16:14:06.452"/>
+</kw>
+<kw name="Input Text" library="RPA.Browser.Selenium">
+<arg>company-contact</arg>
+<arg>Thomas Jenssen</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<msg timestamp="20240726 16:14:06.453" level="INFO">Typing text 'Thomas Jenssen' into text field 'company-contact'.</msg>
+<status status="PASS" starttime="20240726 16:14:06.453" endtime="20240726 16:14:06.499"/>
+</kw>
+<kw name="Input Text" library="RPA.Browser.Selenium">
+<arg>address</arg>
+<arg>Long 2 Tree</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<msg timestamp="20240726 16:14:06.499" level="INFO">Typing text 'Long 2 Tree' into text field 'address'.</msg>
+<status status="PASS" starttime="20240726 16:14:06.499" endtime="20240726 16:14:06.539"/>
+</kw>
+<kw name="Input Text" library="RPA.Browser.Selenium">
+<arg>zipcode</arg>
+<arg>123456AB</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<msg timestamp="20240726 16:14:06.540" level="INFO">Typing text '123456AB' into text field 'zipcode'.</msg>
+<status status="PASS" starttime="20240726 16:14:06.540" endtime="20240726 16:14:06.582"/>
+</kw>
+<kw name="Input Text" library="RPA.Browser.Selenium">
+<arg>city</arg>
+<arg>sao paulo</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<msg timestamp="20240726 16:14:06.583" level="INFO">Typing text 'sao paulo' into text field 'city'.</msg>
+<status status="PASS" starttime="20240726 16:14:06.582" endtime="20240726 16:14:06.624"/>
+</kw>
+<kw name="Input Text" library="RPA.Browser.Selenium">
+<arg>country</arg>
+<arg>Brasil</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<msg timestamp="20240726 16:14:06.625" level="INFO">Typing text 'Brasil' into text field 'country'.</msg>
+<status status="PASS" starttime="20240726 16:14:06.624" endtime="20240726 16:14:06.664"/>
+</kw>
+<kw name="Input Text" library="RPA.Browser.Selenium">
+<arg>telephone</arg>
+<arg>(11) 99999-9999</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<msg timestamp="20240726 16:14:06.665" level="INFO">Typing text '(11) 99999-9999' into text field 'telephone'.</msg>
+<status status="PASS" starttime="20240726 16:14:06.665" endtime="20240726 16:14:06.706"/>
+</kw>
+<kw name="Input Text" library="RPA.Browser.Selenium">
+<arg>email</arg>
+<arg>tom@rpa-unlimited.com</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<msg timestamp="20240726 16:14:06.706" level="INFO">Typing text 'tom@rpa-unlimited.com' into text field 'email'.</msg>
+<status status="PASS" starttime="20240726 16:14:06.706" endtime="20240726 16:14:06.749"/>
+</kw>
+<kw name="Submit Form" library="RPA.Browser.Selenium">
+<doc>Submits a form identified by ``locator``.</doc>
+<msg timestamp="20240726 16:14:06.750" level="INFO">Submitting form 'None'.</msg>
+<status status="PASS" starttime="20240726 16:14:06.749" endtime="20240726 16:14:07.150"/>
+</kw>
+<status status="PASS" starttime="20240726 16:14:06.392" endtime="20240726 16:14:07.151"/>
+</kw>
+<status status="PASS" starttime="20240726 16:14:06.392" endtime="20240726 16:14:07.151"/>
+</test>
+<doc>Template Robot main Suite</doc>
+<status status="PASS" starttime="20240726 16:14:03.052" endtime="20240726 16:14:07.152"/>
+</suite>
+<statistics>
+<total>
+<stat pass="2" fail="0" skip="0">All Tasks</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="2" fail="0" skip="0" id="s1" name="Tasks">Tasks</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

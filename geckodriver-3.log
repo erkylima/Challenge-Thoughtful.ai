@@ -1,0 +1,16 @@
+1722021981223	geckodriver	INFO	Listening on 127.0.0.1:60971
+1722021981734	mozrunner::runner	INFO	Running command: MOZ_CRASHREPORTER="1" MOZ_CRASHREPORTER_NO_REPORT="1" MOZ_CRASHREPORTER_SHUTDOWN="1" MOZ_NO_REMOTE="1" "/hom ... te" "--remote-debugging-port" "33625" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofilefSvt6o"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1722021982049	Marionette	INFO	Marionette enabled
+1722021982209	Marionette	INFO	Listening on port 43905
+Read port: 43905
+WebDriver BiDi listening on ws://127.0.0.1:33625
+1722021982374	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.error: ({})
+DevTools listening on ws://127.0.0.1:33625/devtools/browser/96f44b9d-c213-4384-b04f-71dca2d7625e
+1722022002995	Marionette	INFO	Stopped listening on port 43905
+JavaScript warning: https://www.youtube.com/s/player/1f8742dc/www-embed-player.vflset/www-embed-player.js, line 1102: Script terminated by timeout at:
+wo/this.done</<@https://www.youtube.com/s/player/1f8742dc/www-embed-player.vflset/www-embed-player.js:1102:149
+
+JavaScript warning: https://www.google.com/js/th/C7Y4SiTzZmrcyV5UfQkVifmqs7JfR8xYeORdOpwzQYk.js line 2 > eval line 7548 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
