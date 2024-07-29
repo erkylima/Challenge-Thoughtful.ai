@@ -20,7 +20,7 @@ class LATimesScraperNewsHandler(BaseHandler):
         self.logger = logging.getLogger(__name__)
 
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--window-size=1920x1080")
         chrome_options.add_argument("--disable-extensions")
@@ -153,14 +153,14 @@ class LATimesScraperNewsHandler(BaseHandler):
         response = requests.get(url)
         
         if response.status_code == 200:
-            path = "output/images"
+            path = "output/images/"
             
             if not os.path.exists(path):
                 os.makedirs(path)
             
             file_name = os.path.join(path, os.path.basename(file_path))
             
-            with open(file_name, 'wb') as file:
+            with open(path+file_path, 'wb') as file:
                 file.write(response.content)
             
             return file_name
