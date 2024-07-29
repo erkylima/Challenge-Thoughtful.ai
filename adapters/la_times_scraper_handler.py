@@ -10,13 +10,15 @@ from selenium.webdriver.support import expected_conditions as EC
 from adapters.errors import ExtractionError
 import os
 from adapters.base_handler import BaseHandler, NewsArticle
-import time
+import logging
 
 
 class LATimesScraperNewsHandler(BaseHandler):
     def __init__(self, next_handler=None):
         super().__init__(next_handler)
         # Configurações para o modo headless
+        self.logger = logging.getLogger(__name__)
+
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-gpu")
@@ -27,6 +29,7 @@ class LATimesScraperNewsHandler(BaseHandler):
         self.browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)  
         
     def handle(self, articles: list[NewsArticle], url: str, search_phrase: str, filter: str):
+        self.logger.info("Starting Web Scraper...")
         self.browser.get(url)
 
         try: 
@@ -35,7 +38,7 @@ class LATimesScraperNewsHandler(BaseHandler):
             self.attempt_again(self._select_lastest, 5)
             self.attempt_again(self._scrape_news, 5, articles, search_phrase)
         except Exception as e:
-            print(f"Error occurred: {e}")
+            self.logger.error(f"Error occurred: {e}")
         finally: 
             self.browser.quit()               
         
@@ -52,6 +55,7 @@ class LATimesScraperNewsHandler(BaseHandler):
             search_box = self.browser.find_element(By.NAME,"q")
             search_box.send_keys(phrase + Keys.ENTER)
         except Exception as e:
+            self.logger.error(e)
             raise RuntimeError(ExtractionError.PERFORM_SEARCH_NEWSLETTER_ERROR) from e
         
     def _set_filter(self, filter):
@@ -83,11 +87,12 @@ class LATimesScraperNewsHandler(BaseHandler):
                                                     'button[class="button apply-button"]')        
             apply_button.click()
         except Exception as e:
+            self.logger.error(e)
             raise RuntimeError(ExtractionError.FILTER_SELECTION_ERROR) from e
 
     def _select_lastest(self):
         try:
-            select_element = WebDriverWait(self.browser, 5000).until(
+            select_element = WebDriverWait(self.browser, 50).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'select.select-input[name="s"]'))
             )
             
@@ -100,8 +105,8 @@ class LATimesScraperNewsHandler(BaseHandler):
             select.select_by_value('1')
 
         except Exception as e:
-            print(e)
-            ExtractionError.SELECT_LATEST_ERROR
+            self.logger.error(e)
+            raise RuntimeError(ExtractionError.SELECT_LATEST_ERROR)
     
     def _scrape_news(self, articles: list[NewsArticle], search_phrase):        
         results_is_visible = EC.presence_of_element_located(
@@ -122,7 +127,7 @@ class LATimesScraperNewsHandler(BaseHandler):
                     description = promo_element.find_element(By.CSS_SELECTOR, \
                                                             'p.promo-description').text
                 except Exception as e:
-                    print(ExtractionError.GETTING_DESCRIPTION_ERROR)
+                    self.logger.error(ExtractionError.GETTING_DESCRIPTION_ERROR)
                 
                 date = promo_element.find_element(By.CSS_SELECTOR, \
                                                 'p.promo-timestamp').text
@@ -135,12 +140,12 @@ class LATimesScraperNewsHandler(BaseHandler):
                     image_filename = image_src.split('/')[-1]  # Pega o último segmento da URL
                     self._download_image(image_src, image_filename)
                 except Exception as e:
-                    print(ExtractionError.GETTING_IMAGE_ERROR)
+                    self.logger.error(ExtractionError.GETTING_IMAGE_ERROR)
                 article = NewsArticle(title, date, description, image_filename)
                 article.analyze_content(search_phrase)
                 articles.append(article)                       
             except Exception as e:
-                print(e)
+                self.logger.error(e)
                 raise RuntimeError(ExtractionError.APPENDING_NEWSLETTER_ERROR) from e    
 
 

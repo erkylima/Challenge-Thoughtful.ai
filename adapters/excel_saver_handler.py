@@ -1,9 +1,12 @@
 from adapters.base_handler import BaseHandler, NewsArticle
 from RPA.Excel.Files import Files
+import logging
 
 class ExcelSaverHandler(BaseHandler):
     def __init__(self, next_handler=None, filename="output/news_data.xlsx"):
         super().__init__(next_handler)
+        self.logger = logging.getLogger(__name__)
+
         self.filename = filename
         self.excel = Files()
     
@@ -27,3 +30,4 @@ class ExcelSaverHandler(BaseHandler):
                 article.contains_money
             ]])
         self.excel.save_workbook()
+        self.logger.info("Extraction finished")
