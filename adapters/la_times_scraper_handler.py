@@ -26,15 +26,15 @@ class LATimesScraperNewsHandler(BaseHandler):
         chrome_options.add_argument("--disable-extensions")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
-        self.browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)  
+        self.browser = webdriver.Chrome(options=chrome_options)  
         
-    def handle(self, articles: list[NewsArticle], url: str, search_phrase: str, filter: str):
+    def handle(self, articles: list[NewsArticle], url: str, search_phrase: str, filters: str):
         self.logger.info("Starting Web Scraper...")
         self.browser.get(url)
 
         try: 
             self._perform_search(search_phrase)
-            self._set_filter(filter)
+            self._set_filter(filters)
             self.attempt_again(self._select_lastest, 5)
             self.attempt_again(self._scrape_news, 5, articles, search_phrase)
         except Exception as e:
@@ -44,7 +44,7 @@ class LATimesScraperNewsHandler(BaseHandler):
         
         if self.next_handler:
             articles.extend(super().handle(articles, \
-                                            url, search_phrase, filter))
+                                            url, search_phrase, filters))
         return articles
     
     def _perform_search(self, phrase):
@@ -58,7 +58,7 @@ class LATimesScraperNewsHandler(BaseHandler):
             self.logger.error(e)
             raise RuntimeError(ExtractionError.PERFORM_SEARCH_NEWSLETTER_ERROR) from e
         
-    def _set_filter(self, filter):
+    def _set_filter(self, filters):
         try:
             filter_button = self.browser.find_element(By.CSS_SELECTOR, \
                                                     'button[class="button filters-open-button"]')        

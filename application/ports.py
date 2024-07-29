@@ -3,7 +3,7 @@ from domain.article import NewsArticle
 from application.errors import NewsHandlerError
 class NewsHandler(ABC):
     @abstractmethod
-    def handle(self, articles: list[NewsArticle], url:str, search_phrase:str, filter: str):
+    def handle(self, articles: list[NewsArticle], url:str, search_phrase:str, filters: str):
         pass
 
     

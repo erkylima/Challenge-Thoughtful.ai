@@ -11,11 +11,11 @@ def newsletter_scraper():
     logging.basicConfig(filename='output/extraction.log', level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     search_term = os.environ.get('SEARCH_TERM', '')
-    filter = os.environ.get('FILTER', 'Newsletter')
+    filters = os.environ.get('FILTER', 'Newsletter')
 
     url = "https://www.latimes.com/"
     articles = []
-    handler_chain.handle(articles, url, search_term, filter)
+    handler_chain.handle(articles, url, search_term, filters)
 
 if __name__ == "__main__":
     newsletter_scraper()
