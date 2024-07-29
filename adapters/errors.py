@@ -7,3 +7,4 @@ class ExtractionError:
     APPENDING_NEWSLETTER_ERROR = 'Error appending newsletter'
     GETTING_DESCRIPTION_ERROR = 'Could not find description'
     GETTING_IMAGE_ERROR = 'Could not find image'
+    PARSING_DATE_ERROR = 'Could not find date'

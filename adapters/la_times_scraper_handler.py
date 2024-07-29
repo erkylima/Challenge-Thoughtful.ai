@@ -9,9 +9,11 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
 from adapters.errors import ExtractionError
 import os
+import re
 from adapters.base_handler import BaseHandler, NewsArticle
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
+from dateutil import parser
 
 
 class LATimesScraperNewsHandler(BaseHandler):
@@ -21,7 +23,7 @@ class LATimesScraperNewsHandler(BaseHandler):
         self.logger = logging.getLogger(__name__)
 
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--window-size=1920x1080")
         chrome_options.add_argument("--disable-extensions")
@@ -29,7 +31,7 @@ class LATimesScraperNewsHandler(BaseHandler):
         chrome_options.add_argument("--disable-dev-shm-usage")
         self.browser = webdriver.Chrome(options=chrome_options)  
         
-    def handle(self, articles: list[NewsArticle], url: str, search_phrase: str, filters: str):
+    def handle(self, articles: list[NewsArticle], url: str, search_phrase: str, filters: str, months: int):
         self.logger.info("Starting Web Scraper...")
         self.browser.get(url)
 
@@ -37,7 +39,7 @@ class LATimesScraperNewsHandler(BaseHandler):
             self._perform_search(search_phrase)
             self._set_filter(filters)
             self.attempt_again(self._select_lastest, 5)
-            self.attempt_again(self._scrape_news, 5, articles, search_phrase)
+            self.attempt_again(self._scrape_news, 5, articles, search_phrase, months)
         except Exception as e:
             self.logger.error(f"Error occurred: {e}")
         finally: 
@@ -45,7 +47,7 @@ class LATimesScraperNewsHandler(BaseHandler):
         
         if self.next_handler:
             articles.extend(super().handle(articles, \
-                                            url, search_phrase, filters))
+                                            url, search_phrase, filters, months))
         return articles
     
     def _perform_search(self, phrase):
@@ -109,12 +111,11 @@ class LATimesScraperNewsHandler(BaseHandler):
             self.logger.error(e)
             raise RuntimeError(ExtractionError.SELECT_LATEST_ERROR)
     
-    def _scrape_news(self, articles: list[NewsArticle], search_phrase, months):        
+    def _scrape_news(self, articles: list[NewsArticle], search_phrase, months:int):        
         results_is_visible = EC.presence_of_element_located(
                                             (By.CLASS_NAME, "search-results-module-results-menu"))
         results_container = WebDriverWait(self.browser, 10).until(results_is_visible)    
 
-        cutoff_date = datetime.now() - timedelta(days=30 * months)
 
         list_items = results_container.find_elements(By.TAG_NAME, "li")
         for li in list_items:
@@ -132,8 +133,14 @@ class LATimesScraperNewsHandler(BaseHandler):
                 except Exception as e:
                     self.logger.error(ExtractionError.GETTING_DESCRIPTION_ERROR)
                 
-                date = promo_element.find_element(By.CSS_SELECTOR, \
+                date_str = promo_element.find_element(By.CSS_SELECTOR, \
                                                 'p.promo-timestamp').text
+                date = self._parse_date(date_str)
+
+                if not self._is_within_months(date, months):
+                    continue
+                
+
                 image_filename = ""
                 try:
                     image_element = promo_element.find_element(By.CSS_SELECTOR, \
@@ -144,7 +151,7 @@ class LATimesScraperNewsHandler(BaseHandler):
                     self._download_image(image_src, image_filename)
                 except Exception as e:
                     self.logger.error(ExtractionError.GETTING_IMAGE_ERROR)
-                article = NewsArticle(title, date, description, image_filename)
+                article = NewsArticle(title, date_str, description, image_filename)
                 article.analyze_content(search_phrase)
                 articles.append(article)                       
             except Exception as e:
@@ -170,3 +177,38 @@ class LATimesScraperNewsHandler(BaseHandler):
         else:
             raise FileNotFoundError(f"Failed to download image. Status code: {response.status_code}")
 
+    def _is_within_months(self, date:date, months:int):
+        current_date = datetime.now()
+        delta = (current_date.year - date.year) * 12 + current_date.month - date.month
+        return delta <= months
+
+    
+    def _parse_date(self, date_str: str) -> date:
+        ago_pattern = re.compile(r'(\d+)\s+(second|minute|hour|day|week|month|year)s?\s+ago')
+
+        match = ago_pattern.match(date_str)
+        if match:
+            quantity = int(match.group(1))
+            unit = match.group(2)
+
+            now = datetime.now()
+            if unit == 'second':
+                return now - timedelta(seconds=quantity)
+            elif unit == 'minute':
+                return now - timedelta(minutes=quantity)
+            elif unit == 'hour':
+                return now - timedelta(hours=quantity)
+            elif unit == 'day':
+                return now - timedelta(days=quantity)
+            elif unit == 'week':
+                return now - timedelta(weeks=quantity)
+            elif unit == 'month':
+                return now - timedelta(days=30*quantity)
+            elif unit == 'year':
+                return now - timedelta(days=365*quantity)
+
+        # Caso não seja "X time ago", tenta fazer o parse usando dateutil.parser
+        try:
+            return parser.parse(date_str)
+        except ValueError:
+            raise ValueError(f"Formato de data não reconhecido: {date_str}")

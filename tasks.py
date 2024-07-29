@@ -12,10 +12,11 @@ def newsletter_scraper():
 
     search_term = os.environ.get('SEARCH_TERM', '')
     filters = os.environ.get('FILTER', 'Newsletter')
+    months = int(os.environ.get('MONTHS', 0))
 
     url = "https://www.latimes.com/"
     articles = []
-    handler_chain.handle(articles, url, search_term, filters)
+    handler_chain.handle(articles, url, search_term, filters, months)
 
 if __name__ == "__main__":
     newsletter_scraper()

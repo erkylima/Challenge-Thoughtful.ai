@@ -10,8 +10,8 @@ class ExcelSaverHandler(BaseHandler):
         self.filename = filename
         self.excel = Files()
     
-    def handle(self, articles: list[NewsArticle], url: str, search_phrase: str, filters: str):
-        articles = super().handle(articles, url, search_phrase, filters)
+    def handle(self, articles: list[NewsArticle], url: str, search_phrase: str, filters: str, months: int):
+        articles = super().handle(articles, url, search_phrase, filters, months)
         self._save_to_excel(articles)
         return articles
     
