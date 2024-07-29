@@ -6,7 +6,7 @@ tasks:
     actions:
       - Run Python:
           file: tasks.py
-          function: run
+          function: newsletter_scraper
 
 environmentConfigs:
   - environment_windows_amd64_freeze.yaml
