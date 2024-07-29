@@ -1,9 +1,8 @@
+
 tasks:
   Default:
-    actions:
-      - Run Python:
-          file: tasks.py
-          function: newsletter_scraper
+    description: "Run the newsletter scraper"
+    shell: python -m tasks
 
 environmentConfigs:
   - environment_windows_amd64_freeze.yaml
