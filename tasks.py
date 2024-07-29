@@ -1,9 +1,11 @@
 from adapters.la_times_scraper_handler import LATimesScraperNewsHandler
 from adapters.excel_saver_handler import ExcelSaverHandler
+from robocorp.tasks import task
 import os
 import logging
 logger = logging.getLogger(__name__)
 
+@task
 def newsletter_scraper():
     handler_chain = LATimesScraperNewsHandler(ExcelSaverHandler())
     logging.basicConfig(filename='output/extraction.log', level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
