@@ -10,7 +10,7 @@ def newsletter_scraper():
     handler_chain = LATimesScraperNewsHandler(ExcelSaverHandler())
     logging.basicConfig(filename='output/extraction.log', level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    search_term = os.environ.get('SEARCH_TERM', '')
+    search_term = os.environ.get('SEARCH_TERM', 'money')
     filters = os.environ.get('FILTER', 'Newsletter')
     months = int(os.environ.get('MONTHS', 0))
 
