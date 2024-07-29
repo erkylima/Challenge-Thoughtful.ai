@@ -4,12 +4,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.support.ui import Select
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions as EC
 from adapters.errors import ExtractionError
 import os
 from adapters.base_handler import BaseHandler, NewsArticle
+import time
 
 
 class LATimesScraperNewsHandler(BaseHandler):
@@ -17,7 +18,7 @@ class LATimesScraperNewsHandler(BaseHandler):
         super().__init__(next_handler)
         # Configurações para o modo headless
         chrome_options = webdriver.ChromeOptions()
-        # chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--window-size=1920x1080")
         chrome_options.add_argument("--disable-extensions")
@@ -31,8 +32,8 @@ class LATimesScraperNewsHandler(BaseHandler):
         try: 
             self._perform_search(search_phrase)
             self._set_filter(filter)
-            self._select_lastest()
-            self._scrape_news(articles, search_phrase)
+            self.attempt_again(self._select_lastest, 5)
+            self.attempt_again(self._scrape_news, 5, articles, search_phrase)
         except Exception as e:
             print(f"Error occurred: {e}")
         finally: 
@@ -86,13 +87,22 @@ class LATimesScraperNewsHandler(BaseHandler):
 
     def _select_lastest(self):
         try:
-            select_element = WebDriverWait(self.browser, 2000).until(
+            select_element = WebDriverWait(self.browser, 5000).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'select.select-input[name="s"]'))
             )
+            
+            self.browser.execute_script("arguments[0].scrollIntoView(true);", select_element)
+
+            WebDriverWait(self.browser, 20).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'select.select-input[name="s"]'))
+            )
             select = Select(select_element)
-            select.select_by_visible_text('Newest')
+            select.select_by_value('1')
+
         except Exception as e:
-            raise RuntimeError(ExtractionError.SELECT_LATEST_ERROR) from e
+            print(e)
+            ExtractionError.SELECT_LATEST_ERROR
+    
     def _scrape_news(self, articles: list[NewsArticle], search_phrase):        
         results_is_visible = EC.presence_of_element_located(
                                             (By.CLASS_NAME, "search-results-module-results-menu"))
@@ -130,7 +140,9 @@ class LATimesScraperNewsHandler(BaseHandler):
                 article.analyze_content(search_phrase)
                 articles.append(article)                       
             except Exception as e:
-                raise RuntimeError(ExtractionError.APPENDING_NEWSLETTER_ERROR) from e
+                print(e)
+                raise RuntimeError(ExtractionError.APPENDING_NEWSLETTER_ERROR) from e    
+
 
     def _download_image(self, url, file_path):
         response = requests.get(url)
