@@ -1,8 +1,11 @@
 # https://github.com/robocorp/rcc/blob/master/docs/recipes.md#what-is-in-robotyaml
 
 tasks:
-  Run Task:
-    shell: python -m robocorp.tasks run tasks.py
+  Default:
+    actions:
+      - Run Python:
+          file: tasks.py
+          function: newsletter_scraper
 
 environmentConfigs:
   - environment_windows_amd64_freeze.yaml
