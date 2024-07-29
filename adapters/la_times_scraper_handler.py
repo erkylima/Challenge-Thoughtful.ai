@@ -11,6 +11,7 @@ from adapters.errors import ExtractionError
 import os
 from adapters.base_handler import BaseHandler, NewsArticle
 import logging
+from datetime import datetime, timedelta
 
 
 class LATimesScraperNewsHandler(BaseHandler):
@@ -108,10 +109,12 @@ class LATimesScraperNewsHandler(BaseHandler):
             self.logger.error(e)
             raise RuntimeError(ExtractionError.SELECT_LATEST_ERROR)
     
-    def _scrape_news(self, articles: list[NewsArticle], search_phrase):        
+    def _scrape_news(self, articles: list[NewsArticle], search_phrase, months):        
         results_is_visible = EC.presence_of_element_located(
                                             (By.CLASS_NAME, "search-results-module-results-menu"))
         results_container = WebDriverWait(self.browser, 10).until(results_is_visible)    
+
+        cutoff_date = datetime.now() - timedelta(days=30 * months)
 
         list_items = results_container.find_elements(By.TAG_NAME, "li")
         for li in list_items:
@@ -153,7 +156,7 @@ class LATimesScraperNewsHandler(BaseHandler):
         response = requests.get(url)
         
         if response.status_code == 200:
-            path = "output/images/"
+            path = "output/"
             
             if not os.path.exists(path):
                 os.makedirs(path)
